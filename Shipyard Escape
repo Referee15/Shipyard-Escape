@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Lighthouse Mystery: Nova Scotia Escape Room</title>
+    <style>
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #2b6cb0;
+            --success-color: #2f855a;
+            --error-color: #c53030;
+            --background-color: #f7fafc;
+            --card-background: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: #2d3748;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        h1 { margin: 0; font-size: 2.5rem; }
+        p.subtitle { margin: 10px 0 0 0; font-style: italic; opacity: 0.9; }
+
+        .timer-container {
+            font-size: 1.5rem;
+            font-weight: bold;
+            text-align: center;
+            background: #edf2f7;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 2px solid #cbd5e0;
+        }
+
+        .story-box {
+            background-color: #ebf8ff;
+            border-left: 5px solid var(--secondary-color);
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 25px;
+        }
+
+        .lock-card {
+            background: var(--card-background);
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            border: 1px solid #e2e8f0;
+            display: none; /* Hidden by default */
+        }
+
+        .lock-card.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .lock-header {
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 10px;
+            margin-bottom: 20px;
+            color: var(--primary-color);
+        }
+
+        .question-group {
+            background: #f7fafc;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 3px solid #cbd5e0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"], input[type="number"], select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #cbd5e0;
+            border-radius: 6px;
+            font-size: 1rem;
+            box-sizing: border-box;
+            transition: border-color 0.2s;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--secondary-color);
+        }
+
+        button {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1rem;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            width: 100%;
+            margin-top: 15px;
+        }
+
+        button:hover {
+            background-color: #2b6cb0;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 6px;
+            font-weight: bold;
+            display: none;
+        }
+
+        .feedback.error {
+            background-color: #fed7d7;
+            color: var(--error-color);
+            display: block;
+        }
+
+        .success-screen {
+            text-align: center;
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+            display: none;
+        }
+
+        .success-screen h2 { color: var(--success-color); }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .hint {
+            font-size: 0.85rem;
+            color: #718096;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>The Peggy's Cove Lighthouse Mystery</h1>
+        <p class="subtitle">A Nova Scotia Math & Language Arts Escape Room</p>
+    </header>
+
+    <div class="timer-container">
+        Time Spent: <span id="timer">00:00</span>
+    </div>
+
+    <div id="game-intro" class="story-box">
+        <h3>The Situation:</h3>
+        <p>You are visiting the historic Peggy's Cove Lighthouse when a sudden Atlantic fog rolls in. The keeper's door slams shut, locking you inside! The keeper left a series of clues based on decimals and grammar. Solve all 4 digital locks to unlock the main door and safely escape into the beautiful Nova Scotian coast. You have to work quickly!</p>
+        <button onclick="startGame()">Start the Escape Room</button>
+    </div>
+
+    <div id="lock1" class="lock-card">
+        <div class="lock-header">
+            <h2>🔒 Lock 1: Decoding the Keeper's Log</h2>
+            <p>To crack the first lock, you must correctly interpret the fractional and base-ten decimal blocks recorded by the lighthouse keeper.</p>
+        </div>
+
+        <div class="question-group">
+            <label>1. Write "three tenths" as a decimal.</label>
+            <input type="text" id="l1q1" placeholder="e.g., 0.5">
+        </div>
+
+        <div class="question-group">
+            <label>2. A lobster trap holds 100 lobsters. If 45 of them are legal size, what decimal represents the fraction of legal lobsters? ($\frac{45}{100}$)</label>
+            <input type="text" id="l1q2" placeholder="e.g., 0.55">
+        </div>
+
+        <div class="question-group">
+            <label>3. Look at this combination representation: 2 whole units, 7 tenths, and 8 hundredths. What is the total decimal value?</label>
+            <input type="text" id="l1q3" placeholder="e.g., 1.23">
+        </div>
+
+        <button onclick="checkLock1()">Attempt Lock 1</button>
+        <div id="l1-feedback" class="feedback"></div>
+    </div>
+
+    <div id="lock2" class="lock-card">
+        <div class="lock-header">
+            <h2>🔒 Lock 2: Navigating the Ships</h2>
+            <p>Four Bluenose racing sloops are tracking their distances from the Halifax Harbour in kilometers. You must order their positions correctly to chart your path.</p>
+            <p><strong>The distances are: Ship A (4.25 km), Ship B (4.2 km), Ship C (4.09 km), Ship D (4.3 km).</strong></p>
+        </div>
+
+        <div class="question-group">
+            <label>1. Which ship is the absolute CLOSEST to the harbor? (Smallest decimal)</label>
+            <select id="l2q1">
+                <option value="">--Select a Ship--</option>
+                <option value="A">Ship A (4.25 km)</option>
+                <option value="B">Ship B (4.2 km)</option>
+                <option value="C">Ship C (4.09 km)</option>
+                <option value="D">Ship D (4.3 km)</option>
+            </select>
+        </div>
+
+        <div class="question-group">
+            <label>2. Arrange the ships from <strong>FURTHEST to CLOSEST</strong>. Type the letter order with no spaces (e.g., ABCD).</label>
+            <input type="text" id="l2q2" placeholder="Four letters, e.g., ABCD">
+            <div class="hint">Hint: Compare the tenths place first, then the hundredths place!</div>
+        </div>
+
+        <div class="question-group">
+            <label>3. Is 4.25 greater than, less than, or equal to 4.3? Type either: <strong>greater</strong>, <strong>less</strong>, or <strong>equal</strong>.</label>
+            <input type="text" id="l2q3" placeholder="Type lower-case word">
+        </div>
+
+        <button onclick="checkLock2()">Attempt Lock 2</button>
+        <div id="l2-feedback" class="feedback"></div>
+    </div>
+
+    <div id="lock3" class="lock-card">
+        <div class="lock-header">
+            <h2>🔒 Lock 3: The Gift Shop Inventory</h2>
+            <p>The lighthouse master keeps a ledger of souvenir sales. Use your decimal addition, subtraction, and money knowledge to unlock this vault.</p>
+        </div>
+
+        <div class="question-group">
+            <label>1. A postcard costs $0.75 and a lighthouse keychain costs $3.20. What is the combined cost of both items?</label>
+            <input type="text" id="l3q1" placeholder="Format like 0.00, do not include $ symbol">
+        </div>
+
+        <div class="question-group">
+            <label>2. You pay for a $6.45 maple syrup candy package using a $10.00 bill. How much change should you get back?</label>
+            <input type="text" id="l3q2" placeholder="Format like 0.00, do not include $ symbol">
+        </div>
+
+        <div class="question-group">
+            <label>3. Solve: $12.50 + $3.05 - $0.10$</label>
+            <input type="text" id="l3q3" placeholder="Format like 0.00, do not include $ symbol">
+        </div>
+
+        <button onclick="checkLock3()">Attempt Lock 3</button>
+        <div id="l3-feedback" class="feedback"></div>
+    </div>
+
+    <div id="lock4" class="lock-card">
+        <div class="lock-header">
+            <h2>🔒 Lock 4: The Final Grammar Riddle</h2>
+            <p>To safely override the electronic door, you have to dissect the sentences inscribed on the historic lighthouse plaque into <strong>Subjects</strong> (who/what the sentence is about) and <strong>Predicates</strong> (what the subject is or does).</p>
+        </div>
+
+        <div class="question-group">
+            <label>Sentence: "The powerful Atlantic waves crashed against the granite rocks."<br><strong>What is the COMPLETE SUBJECT of this sentence?</strong></label>
+            <select id="l4q1">
+                <option value="">--Select Answer--</option>
+                <option value="1">The powerful Atlantic waves</option>
+                <option value="2">crashed against the granite rocks</option>
+                <option value="3">waves crashed</option>
+            </select>
+        </div>
+
+        <div class="question-group">
+            <label>Sentence: "A beautiful bald eagle soared high above Cape Breton."<br><strong>What is the COMPLETE PREDICATE of this sentence?</strong></label>
+            <select id="l4q2">
+                <option value="">--Select Answer--</option>
+                <option value="1">A beautiful bald eagle</option>
+                <option value="2">soared high above Cape Breton</option>
+                <option value="3">soared high</option>
+            </select>
+        </div>
+
+        <div class="question-group">
+            <label>Sentence: "Many eager tourists / visit Peggy's Cove every single summer."<br>Is the part <strong>AFTER</strong> the slash (/) the Subject or the Predicate? Type either <strong>subject</strong> or <strong>predicate</strong>.</label>
+            <input type="text" id="l4q3" placeholder="Type lower-case word">
+        </div>
+
+        <button onclick="checkLock4()">Attempt Final Lock</button>
+        <div id="l4-feedback" class="feedback"></div>
+    </div>
+
+    <div id="success-screen" class="success-screen">
+        <h2>🎉 Congratulations! You Escaped! 🎉</h2>
+        <p>The electronic lock clicks, the heavy door swings open, and fresh coastal air greets you! You used your knowledge of Nova Scotia math and grammar to navigate the lighthouse mystery successfully.</p>
+        <hr>
+        <h3>Your Official Escape Report:</h3>
+        <p style="font-size: 1.3rem;">Total Time Taken: <span id="final-time" style="color: var(--success-color); font-weight: bold;"></span></p>
+        <p>Share your escape time with your teacher!</p>
+    </div>
+</div>
+
+<script>
+    let startTime;
+    let timerInterval;
+
+    function startGame() {
+        document.getElementById('game-intro').style.display = 'none';
+        document.getElementById('lock1').classList.add('active');
+        startTime = Date.now();
+        timerInterval = setInterval(updateTimer, 1000);
+    }
+
+    function updateTimer() {
+        let elapsedTime = Date.now() - startTime;
+        let totalSeconds = Math.floor(elapsedTime / 1000);
+        let minutes = Math.floor(totalSeconds / 60);
+        let seconds = totalSeconds % 60;
+        
+        document.getElementById('timer').innerText = 
+            (minutes < 10 ? "0" + minutes : minutes) + ":" + 
+            (seconds < 10 ? "0" + seconds : seconds);
+    }
+
+    function checkLock1() {
+        let q1 = document.getElementById('l1q1').value.trim();
+        let q2 = document.getElementById('l1q2').value.trim();
+        let q3 = document.getElementById('l1q3').value.trim();
+        let feedback = document.getElementById('l1-feedback');
+
+        // Normalizing inputs to catch common format variations
+        if ((q1 === "0.3" || q1 === ".3") && 
+            (q2 === "0.45" || q2 === ".45") && 
+            q3 === "2.78") {
+            
+            feedback.style.display = "none";
+            document.getElementById('lock1').classList.remove('active');
+            document.getElementById('lock2').classList.add('active');
+        } else {
+            feedback.className = "feedback error";
+            feedback.innerText = "❌ The lock won't budge. Double check your decimal places (tenths and hundredths)!";
+        }
+    }
+
+    function checkLock2() {
+        let q1 = document.getElementById('l2q1').value;
+        let q2 = document.getElementById('l2q2').value.trim().toUpperCase();
+        let q3 = document.getElementById('l2q3').value.trim().toLowerCase();
+        let feedback = document.getElementById('l2-feedback');
+
+        if (q1 === "C" && q2 === "DABC" && q3 === "less") {
+            feedback.style.display = "none";
+            document.getElementById('lock2').classList.remove('active');
+            document.getElementById('lock3').classList.add('active');
+        } else {
+            feedback.className = "feedback error";
+            feedback.innerText = "❌ Incorrect tracking coordinates. Remember: 4.3 is the same as 4.30!";
+        }
+    }
+
+    function checkLock3() {
+        let q1 = document.getElementById('l3q1').value.trim();
+        let q2 = document.getElementById('l3q2').value.trim();
+        let q3 = document.getElementById('l3q3').value.trim();
+        let feedback = document.getElementById('l3-feedback');
+
+        if ((q1 === "3.95") && (q2 === "3.55") && (q3 === "15.45" || q3 === "15.4")) {
+            feedback.style.display = "none";
+            document.getElementById('lock3').classList.remove('active');
+            document.getElementById('lock4').classList.add('active');
+        } else {
+            feedback.className = "feedback error";
+            feedback.innerText = "❌ The ledger total is incorrect. Make sure you align your decimal points before calculating!";
+        }
+    }
+
+    function checkLock4() {
+        let q1 = document.getElementById('l4q1').value;
+        let q2 = document.getElementById('l4q2').value;
+        let q3 = document.getElementById('l4q3').value.trim().toLowerCase();
+        let feedback = document.getElementById('l4-feedback');
+
+        if (q1 === "1" && q2 === "2" && q3 === "predicate") {
+            clearInterval(timerInterval);
+            feedback.style.display = "none";
+            document.getElementById('lock4').classList.remove('active');
+            
+            // Show Success Screen
+            document.getElementById('success-screen').style.display = 'block';
+            document.getElementById('final-time').innerText = document.getElementById('timer').innerText;
+        } else {
+            feedback.className = "feedback error";
+            feedback.innerText = "❌ Grammatical Error! Remember: The subject is who/what does the action, the predicate contains the verb.";
+        }
+    }
+</script>
+
+</body>
+</html>
